@@ -1,0 +1,62 @@
+#### EPV ####
+
+EPV2024$P103[EPV2024$P103 == 1] <- 0
+EPV2024$P103[EPV2024$P103 == 2] <- 1
+
+EPV2024$P102[EPV2024$P102 == 1] <- 0
+EPV2024$P102[EPV2024$P102 == 2] <- 1
+
+EPV2024$SEXO[EPV2024$SEXO == 1] <- 0
+EPV2024$SEXO[EPV2024$SEXO == 2] <- 1
+
+EPV2024$P203[EPV2024$P203 == 2] <- 0
+
+EPV2024$P500[EPV2024$P500 == 2] <- 0
+
+
+logit_EPV2024 <- glm(P103 ~ SEXO + REDAD + ESTRATO + P203 + P500, data = EPV2024, family = binomial(link = "logit"), weights = FACTOR)
+summary(logit_EPV2024)
+
+#las mujeres tienen una probabilidad mucho mayor de sentirse inseguras
+#a medida que la edad aumenta, las personas tienen menos probabilidades de sentirse inseguras
+#los estratos más altos están asociados con una menor probabilidad de sentirse inseguro
+#quienes fueron víctimas tienen una menor probabilidad de sentirse inseguros
+#las personas con una empresa tienen menos probabilidad de sentirse inseguras
+
+library(MASS)
+logit_EPV2024_loc <- glm(P102 ~ SEXO + REDAD + ESTRATO + P203 + P500, data = EPV2024, family = binomial(link = "logit"), weights = FACTOR)
+summary(logit_EPV2024_loc)
+
+#las mujeres tienen una probabilidad mucho mayor de sentirse inseguras
+#a medida que la edad aumenta, las personas tienen más probabilidades de sentirse inseguras
+#los estratos más altos están asociados con una menor probabilidad de sentirse inseguro
+#quienes fueron víctimas tienen una mayor probabilidad de sentirse inseguros
+#las personas con una empresa tienen más probabilidad de sentirse inseguras
+
+library(gmodels)
+
+tabla1 <- CrossTable(EPV2024$LOCALIDAD, EPV2024$P203, prop.chisq = FALSE)
+tabla2 <- CrossTable(EPV2024$ESTRATO, EPV2024$P203, prop.chisq = FALSE)
+tabla3 <- CrossTable(EPV2024$SEXO, EPV2024$P203, prop.chisq = FALSE)
+
+
+#### ECN ####
+
+ecn2024$P56_1 <- factor(ecn2024$P56_1, ordered = TRUE)
+ecn2024$P64 <- factor(ecn2024$P64, ordered = TRUE)
+ecn2024$F5 <- factor(ecn2024$F5, ordered = TRUE)
+
+ecn2024 <- ecn2024[ecn2024$P62 %in% c(1, 2), ]
+
+ecn2024$P62 <- ifelse(ecn2024$P62 == 1, 0, 1)
+
+logit_ordinal <- polr(P56_1 ~ F5 + P62 + P64, data = ecn2024, method = "logistic")
+summary(logit_ordinal)
+
+#las mujeres tienen menos probabilidad de tener una percepción buena de seguridad comparada con los hombres.
+#F5.L dice que entre más grande la empresa, es más probable de tener una percepción buena de seguridad.
+#P64.L dice que a mayor nivel de educación siendo posgrado el mayor nivel, es más probable de tener una percepción buena de seguridad.
+
+tabla4 <- CrossTable(ecn2024$F5, ecn2024$P56_1, prop.chisq = FALSE)
+tabla5 <- CrossTable(ecn2024$P62, ecn2024$P56_1, prop.chisq = FALSE)
+tabla6 <- CrossTable(ecn2024$P64, ecn2024$P56_1, prop.chisq = FALSE)
