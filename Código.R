@@ -1,20 +1,18 @@
+library(readr)
+EPV2024 <- read_csv("EPV/EPV2024.csv")
+EPV2023 <- read_csv("EPV/EPV2023.csv")
+EPV2022 <- read_csv("EPV/EPV2022.csv")
+EPV2021 <- read_csv("EPV/EPV2021.csv")
+EPV2020 <- read_csv("EPV/EPV2020.csv")
+ecn2024 <- read_csv("ECN/ecn2024.csv")
+ecn2023 <- read_csv("ECN/ecn2023.csv")
+ecn2022 <- read_csv("ECN/ecn2022.csv")
+ecn2021 <- read_csv("ECN/ecn2021.csv")
+ecn2020 <- read_csv("ECN/ecn2020.csv")
+
 #### EPV ####
 
-EPV2024$P103[EPV2024$P103 == 1] <- 0
-EPV2024$P103[EPV2024$P103 == 2] <- 1
-
-EPV2024$P102[EPV2024$P102 == 1] <- 0
-EPV2024$P102[EPV2024$P102 == 2] <- 1
-
-EPV2024$SEXO[EPV2024$SEXO == 1] <- 0
-EPV2024$SEXO[EPV2024$SEXO == 2] <- 1
-
-EPV2024$P203[EPV2024$P203 == 2] <- 0
-
-EPV2024$P500[EPV2024$P500 == 2] <- 0
-
-
-logit_EPV2024 <- glm(P103 ~ SEXO + REDAD + ESTRATO + P203 + P500, data = EPV2024, family = binomial(link = "logit"), weights = FACTOR)
+logit_EPV2024 <- glm(PERCEPCION ~ SEXO + REDAD + ESTRATO + P203 + P500, data = EPV2024, family = binomial(link = "logit"), weights = FACTOR)
 summary(logit_EPV2024)
 
 #las mujeres tienen una probabilidad mucho mayor de sentirse inseguras
@@ -42,7 +40,7 @@ tabla3 <- CrossTable(EPV2024$SEXO, EPV2024$P203, prop.chisq = FALSE)
 
 #### ECN ####
 
-ecn2024$P56_1 <- factor(ecn2024$P56_1, ordered = TRUE)
+ecn2024$PERCEPCION <- factor(ecn2024$PERCEPCION, ordered = TRUE)
 ecn2024$P64 <- factor(ecn2024$P64, ordered = TRUE)
 ecn2024$F5 <- factor(ecn2024$F5, ordered = TRUE)
 
@@ -50,7 +48,7 @@ ecn2024 <- ecn2024[ecn2024$P62 %in% c(1, 2), ]
 
 ecn2024$P62 <- ifelse(ecn2024$P62 == 1, 0, 1)
 
-logit_ordinal <- polr(P56_1 ~ F5 + P62 + P64, data = ecn2024, method = "logistic")
+logit_ordinal <- polr(P56_1 ~ F5 + PERCEPCION + P64, data = ecn2024, method = "logistic")
 summary(logit_ordinal)
 
 #las mujeres tienen menos probabilidad de tener una percepción buena de seguridad comparada con los hombres.
