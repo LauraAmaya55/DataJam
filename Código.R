@@ -12,30 +12,50 @@ ecn2020 <- read_csv("ECN/ecn2020.csv")
 
 #### EPV ####
 
-logit_EPV2024 <- glm(PERCEPCION ~ SEXO + REDAD + ESTRATO + P203 + P500, data = EPV2024, family = binomial(link = "logit"), weights = FACTOR)
-summary(logit_EPV2024)
-
-#las mujeres tienen una probabilidad mucho mayor de sentirse inseguras
-#a medida que la edad aumenta, las personas tienen menos probabilidades de sentirse inseguras
-#los estratos más altos están asociados con una menor probabilidad de sentirse inseguro
-#quienes fueron víctimas tienen una menor probabilidad de sentirse inseguros
-#las personas con una empresa tienen menos probabilidad de sentirse inseguras
-
 library(MASS)
-logit_EPV2024_loc <- glm(P102 ~ SEXO + REDAD + ESTRATO + P203 + P500, data = EPV2024, family = binomial(link = "logit"), weights = FACTOR)
-summary(logit_EPV2024_loc)
-
-#las mujeres tienen una probabilidad mucho mayor de sentirse inseguras
-#a medida que la edad aumenta, las personas tienen más probabilidades de sentirse inseguras
-#los estratos más altos están asociados con una menor probabilidad de sentirse inseguro
-#quienes fueron víctimas tienen una mayor probabilidad de sentirse inseguros
-#las personas con una empresa tienen más probabilidad de sentirse inseguras
-
+library(stargazer)
+library(dplyr)
 library(gmodels)
+library(tidyr)
 
-tabla1 <- CrossTable(EPV2024$LOCALIDAD, EPV2024$P203, prop.chisq = FALSE)
-tabla2 <- CrossTable(EPV2024$ESTRATO, EPV2024$P203, prop.chisq = FALSE)
-tabla3 <- CrossTable(EPV2024$SEXO, EPV2024$P203, prop.chisq = FALSE)
+
+logit_EPV2024 <- glm(PERCEPCION ~ SEXO + REDAD + ESTRATO + P203 + P500, data = EPV2024, family = binomial(link = "logit"))
+logit_EPV2024_loc <- glm(P102 ~ SEXO + REDAD + ESTRATO + P203 + P500, data = EPV2024, family = binomial(link = "logit"))
+
+stargazer(logit_EPV2024, logit_EPV2024_loc, type = "text", 
+          title = "Comparación de Resultados del Logit", 
+          column.labels = c("en Bogotá", "en la localidad en la que vive"),  # Nombres de columnas
+          dep.var.labels = c("Percepción de seguridad", "Percepción de seguridad"),  # Cambia nombres
+          covariate.labels = c("SEXO (MUJER=1)", "REDAD", "ESTRATO", "VÍCTIMA (SI=1)", "NEGOCIO (SI=1)"),  # Etiquetas de los predictores
+          out = "logit_comparison.tex")
+
+EPV2024_rep <- EPV2024 %>%
+  uncount(weights = round(FEX))
+
+tabla1 <- CrossTable(EPV2024_rep$LOCALIDAD, EPV2024_rep$P203, prop.chisq = FALSE)
+tabla2 <- CrossTable(EPV2024_rep$ESTRATO, EPV2024_rep$P203, prop.chisq = FALSE)
+tabla3 <- CrossTable(EPV2024_rep$SEXO, EPV2024_rep$P203, prop.chisq = FALSE)
+
+
+#Proporciones relativas por columna (segunda fila de cada celda)
+##El 84% de las personas que no fueron víctimas de algún delito son hombres.
+##El 85.4% de las personas que no fueron víctimas de algún delito son mujeres.
+##El 16% de las personas que fueron víctimas de algún delito son hombres.
+##El 14.6% de las personas que fueron víctimas de algún delito son mujeres.
+
+#Proporciones relativas por fila (tercera fila de cada celda)
+##El 46.7% de los hombres no fueron víctimas de algún delito.
+##El 49.2% de los hombres fueron víctimas de algún delito.
+##El 53.3% de las mujeres no fueron víctimas de algún delito.
+##El 50.8% de las mujeres fueron víctimas de algún delito.
+
+#Proporciones relativas al total general (cuarta fila de cada celda)
+##El 39.6% del total son hombres que no fueron víctimas de algún delito.
+##El 7.5% del total son hombres que fueron víctimas de algún delito. 
+##El 45.2% del total son mujeres que no fueron víctimas de algún delito.
+##El 7.7% del total son mujeres que fueron víctimas de algún delito.
+
+##Un 15.3% del total fueron víctimas de algún delito.
 
 
 #### ECN ####
