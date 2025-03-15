@@ -9,20 +9,36 @@ library(treemap)
 
 # 2. Cálculos para EPV (Encuesta de Percepción de Vulnerabilidad)----------------------------------------------------------------------------
 
-ins_2024 <- sum((EPV2024$P103 == 2) * EPV2024$FACTOR, na.rm = TRUE)
-ins_2023 <- sum((EPV2023$P103 == 2) * EPV2023$FEX, na.rm = TRUE)
-ins_2022 <- sum((EPV2022$P103 == 2) * EPV2022$FEX, na.rm = TRUE)
-ins_2021 <- sum((EPV2021$P103 == 2) * EPV2021$FEX, na.rm = TRUE)
-ins_2020 <- sum((EPV2020$P103 == "Inseguro") * EPV2020$FEX, na.rm = TRUE)
+sum_fact_2024_epv <- sum(EPV2024$FACTOR, na.rm = TRUE)
+sum_fact_2023_epv <- sum(EPV2023$FEX, na.rm = TRUE)
+sum_fact_2022_epv <- sum(EPV2022$FEX, na.rm = TRUE)
+sum_fact_2021_epv  <- sum(EPV2021$FEX, na.rm = TRUE)
+sum_fact_2020_epv <- sum(EPV2020$FEX, na.rm = TRUE)
+
+
+ins_2024 <- sum((EPV2024$P103 == 2) * EPV2024$FACTOR, na.rm = TRUE)/sum_fact_2024_epv
+ins_2023 <- sum((EPV2023$P103 == 2) * EPV2023$FEX, na.rm = TRUE)/sum_fact_2023_epv
+ins_2022 <- sum((EPV2022$P103 == 2) * EPV2022$FEX, na.rm = TRUE)/sum_fact_2022_epv
+ins_2021 <- sum((EPV2021$P103 == 2) * EPV2021$FEX, na.rm = TRUE)/sum_fact_2021_epv
+ins_2020 <- sum((EPV2020$P103 == "Inseguro") * EPV2020$FEX, na.rm = TRUE)/sum_fact_2020_epv
+
 
 
 # 3. Cálculos para ECN (Encuesta de Condiciones de Vida) ----------------------------------------------------------------------------
 
-ins_2024_ecn <- sum((ecn2024$P56 == 2) * ecn2024$FACTOR_REGION, na.rm = TRUE)
-ins_2023_ecn <- sum((ecn2023$P56 == 2) * ecn2023$PONDERA, na.rm = TRUE)
-ins_2022_ecn <- sum((ecn2022$P56 == 2) * ecn2022$F.EXPANSIÓN, na.rm = TRUE)
-ins_2021_ecn <- sum((ecn2021$P54 == 2) * ((ecn2020$fexp + ecn2022$F.EXPANSIÓN) / 2), na.rm = TRUE)
-ins_2020_ecn <- sum((ecn2020$p_p64_p64 == 2) * ecn2020$fexp, na.rm = TRUE)
+
+sum_fact_2024 <- sum(ecn2024$FACTOR_REGION, na.rm = TRUE)
+sum_fact_2023 <- sum(ecn2023$PONDERA, na.rm = TRUE)
+sum_fact_2022 <- sum(ecn2022$F.EXPANSIÓN, na.rm = TRUE)
+sum_fact_2021 <- sum((ecn2020$fexp + ecn2022$F.EXPANSIÓN) / 2, na.rm = TRUE)
+sum_fact_2020 <- sum(ecn2020$fexp, na.rm = TRUE)
+
+
+ins_2024_ecn <- sum((ecn2024$P56 == 2) * ecn2024$FACTOR_REGION, na.rm = TRUE)/sum_fact_2024
+ins_2023_ecn <- sum((ecn2023$P56 == 2) * ecn2023$PONDERA, na.rm = TRUE)/sum_fact_2023
+ins_2022_ecn <- sum((ecn2022$P56 == 2) * ecn2022$F.EXPANSIÓN, na.rm = TRUE)/sum_fact_2022
+ins_2021_ecn <- sum((ecn2021$P54 == 2) * ((ecn2020$fexp + ecn2022$F.EXPANSIÓN) / 2), na.rm = TRUE)/sum_fact_2021
+ins_2020_ecn <- sum((ecn2020$p_p64_p64 == 2) * ecn2020$fexp, na.rm = TRUE)/sum_fact_2020
 
 
 # 4. Preparación para gráficos----------------------------------------------------------------------------
