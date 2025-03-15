@@ -23,9 +23,7 @@ ins_2021 <- sum((EPV2021$P103 == 2) * EPV2021$FEX, na.rm = TRUE)/sum_fact_2021_e
 ins_2020 <- sum((EPV2020$P103 == "Inseguro") * EPV2020$FEX, na.rm = TRUE)/sum_fact_2020_epv
 
 
-
 # 3. Cálculos para ECN (Encuesta de Condiciones de Vida) ----------------------------------------------------------------------------
-
 
 sum_fact_2024 <- sum(ecn2024$FACTOR_REGION, na.rm = TRUE)
 sum_fact_2023 <- sum(ecn2023$PONDERA, na.rm = TRUE)
@@ -47,6 +45,8 @@ datos_epv <- data.frame(
   Año = c(2020, 2021, 2022, 2023, 2024),
   Conteo = c(ins_2020, ins_2021, ins_2022, ins_2023, ins_2024)
 )
+
+datos_epv
 
 datos_ecn <- data.frame(
   Año = c(2020, 2021, 2022, 2023, 2024),
@@ -78,41 +78,88 @@ ggplot(datos_ecn, aes(x = factor(Año), y = Conteo)) +
 # 6. Treemaps para ECN (2024, 2023, 2022, 2020)----------------------------------------------------------------------------
 
 # Treemap para 2024
+
+textos_personalizados <- c(
+  "P39_A" = "Conexión empresas-persona",
+  "P39_B" = "Apoyar proyectos de infraestructura",
+  "P39_C" = "Generar inversión extranjera a microempresas",
+  "P39_D" = "Alianazas estrategicas de inversión",
+  "P39_E" = "Ruedas de negocios",
+  "P39_F" = "Iniciativas de mejora de entorno de negocios",
+  "P39_G" = "Generar conocimiento económico"
+)
+
 cols <- paste("P39_", LETTERS[1:7], sep = "")
 count_5 <- sapply(cols, function(col) sum(ifelse(ecn2024[[col]] == 5, ecn2024$FACTOR_REGION, 0), na.rm = TRUE))
 total_5 <- sum(count_5)
 percent_5 <- round((count_5 / total_5) * 100, 2)
 count_data <- data.frame(columna = names(count_5), cantidad_5 = count_5, porcentaje = percent_5)
-count_data$label <- paste0(count_data$columna, "\n", count_data$porcentaje, "%")
+count_data$label <- paste0(textos_personalizados[count_data$columna], "\n", count_data$porcentaje, "%")
 
-treemap(count_data, index = "label", vSize = "cantidad_5", vColor = "cantidad_5", draw = TRUE, palette = "Reds", title = "Proporción de percepción de servicios más importantes a implementar en economía popular")
+treemap(count_data, 
+        index = "label", 
+        vSize = "cantidad_5", 
+        vColor = "cantidad_5", 
+        draw = TRUE, 
+        palette = "Reds", 
+        title = "Proporción de percepción de servicios más importantes a implementar en economía popular")
+
+
 
 # Treemap para 2023
+
 cols_2023 <- paste0("P39_", 1:6)
 count_5_2023 <- sapply(cols_2023, function(col) sum(ifelse(ecn2023[[col]] == 5, ecn2023$PONDERA, 0), na.rm = TRUE))
 total_5_2023 <- sum(count_5_2023)
 percent_5_2023 <- round((count_5_2023 / total_5_2023) * 100, 2)
 count_data_2023 <- data.frame(columna = names(count_5_2023), cantidad_5 = count_5_2023, porcentaje = percent_5_2023)
-count_data_2023$label <- paste0(count_data_2023$columna, "\n", count_data_2023$porcentaje, "%")
+count_data_2023$label <- paste0(textos_personalizados[count_data_2023$columna], "\n", count_data_2023$porcentaje, "%")
 
-treemap(count_data_2023, index = "label", vSize = "cantidad_5", vColor = "cantidad_5", draw = TRUE, palette = "Reds", title = "Proporción de percepción de servicios más importantes a implementar en economía popular en 2023")
+treemap(count_data_2023, index = "label", vSize = "cantidad_5", vColor = "cantidad_5", draw = TRUE, palette = "Reds")
 
 # Treemap para 2022
+
+textos_personalizados_2022 <- c(
+  "P39.1" = "Conexión empresas-persona",
+  "P39.2" = "Apoyar proyectos de infraestructura",
+  "P39.3" = "Generar inversión extranjera a microempresas",
+  "P39.4" = "Alianazas estrategicas de inversión",
+  "P39.5" = "Ruedas de negocios",
+  "P39.6" = "Iniciativas de mejora de entorno de negocios"
+)
+
 cols_2022 <- paste0("P39.", 1:6)
 count_5_2022 <- sapply(cols_2022, function(col) sum(ifelse(ecn2022[[col]] == 5, ecn2022$`F.EXPANSIÓN`, 0), na.rm = TRUE))
 total_5_2022 <- sum(count_5_2022)
 percent_5_2022 <- round((count_5_2022 / total_5_2022) * 100, 2)
 count_data_2022 <- data.frame(columna = names(count_5_2022), cantidad_5 = count_5_2022, porcentaje = percent_5_2022)
-count_data_2022$label <- paste0(count_data_2022$columna, "\n", count_data_2022$porcentaje, "%")
+count_data_2022$label <- paste0(textos_personalizados_2022[count_data_2022$columna], "\n", count_data_2022$porcentaje, "%")
 
-treemap(count_data_2022, index = "label", vSize = "cantidad_5", vColor = "cantidad_5", draw = TRUE, palette = "Reds", title = "Proporción de percepción de servicios más importantes a implementar en economía popular en 2022")
+treemap(count_data_2022, index = "label", vSize = "cantidad_5", vColor = "cantidad_5", draw = TRUE, palette = "Reds")
+
 
 # Treemap para 2020
+textos_personalizados_2020 <- c(
+  "p_p37_p37_1" = "Iniciativas de cluster",
+  "p_p37_p37_2" = "Innovar en desarrollo",
+  "p_p37_p37_3" = "Generar empleo",
+  "p_p37_p37_4" = "Cumplir obligaciones tributarias",
+  "p_p37_p37_5" = "Competencia leal",
+  "p_p37_p37_6" = "Inversión en formación humana",
+  "p_p37_p37_7" = "Promover la formalidad",
+  "p_p37_p37_8" = "Promover legalidad",
+  "p_p37_p37_9" = "Cumplir normas ambientales",
+  "p_p37_p37_10" = "Proyectos de cooperación publico privada",
+  "p_p37_p37_11" = "Promover la ciudad",
+  "p_p37_p37_12" = "Respetar espacio publico",
+  "p_p37_p37_13" = "otro"
+)
+
 cols_2020 <- paste0("p_p37_p37_", 1:13)
 count_1_2020 <- sapply(cols_2020, function(col) sum(ifelse(ecn2020[[col]] == 1, ecn2020$fexp, 0), na.rm = TRUE))
 total_1_2020 <- sum(count_1_2020)
 percent_1_2020 <- round((count_1_2020 / total_1_2020) * 100, 2)
 count_data_2020 <- data.frame(columna = names(count_1_2020), cantidad_1 = count_1_2020, porcentaje = percent_1_2020)
-count_data_2020$label <- paste0(count_data_2020$columna, "\n", count_data_2020$porcentaje, "%")
+count_data_2020$label <- paste0(textos_personalizados_2020[count_data_2020$columna], "\n", count_data_2020$porcentaje, "%")
 
-treemap(count_data_2020, index = "label", vSize = "cantidad_1", vColor = "cantidad_1", draw = TRUE, palette = "Reds", title = "Proporción de percepción de servicios más importantes a implementar en economía popular en 2020")
+treemap(count_data_2020, index = "label", vSize = "cantidad_1", vColor = "cantidad_1", draw = TRUE, palette = "Reds")
