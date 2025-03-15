@@ -19,14 +19,14 @@ ecn2020 <- read_csv("ECN/ecn2020.csv")
 
 #### EPV ####
 # Logits #
-logit_EPV2024 <- glm(PERCEPCION ~ SEXO + REDAD + ESTRATO + P203 + P121 + P500, data = EPV2024, family = binomial(link = "logit"))
-logit_EPV2024_loc <- glm(P102 ~ SEXO + REDAD + ESTRATO + P203 + P121 + P500, data = EPV2024, family = binomial(link = "logit"))
+logit_EPV2024 <- glm(PERCEPCION ~ SEXO + REDAD + ESTRATO + P203 + P121 + P446 + P500, data = EPV2024, family = binomial(link = "logit"))
+logit_EPV2024_loc <- glm(P102 ~ SEXO + REDAD + ESTRATO + P203 + P121 + P446 + P500, data = EPV2024, family = binomial(link = "logit"))
 
 stargazer(logit_EPV2024, logit_EPV2024_loc, type = "text", 
           title = "Comparación de Resultados del Logit", 
           column.labels = c("en Bogotá", "en la localidad en la que vive"),
           dep.var.labels = c("Percepción de seguridad", "Percepción de seguridad"),
-          covariate.labels = c("SEXO (MUJER=1)", "REDAD", "ESTRATO", "VÍCTIMA (SI=1)", "PRECENCIÓ (SI=1)", "NEGOCIO (SI=1)"),
+          covariate.labels = c("SEXO (MUJER=1)", "REDAD", "ESTRATO", "VÍCTIMA", "PRECENCIÓ", "PERCEPCIÓN NEGOCIO", "NEGOCIO"),
           out = "logit_comparison.tex")
 
 # CrossTables #
@@ -36,6 +36,7 @@ EPV2024_rep <- EPV2024 %>%
 tabla1 <- CrossTable(EPV2024_rep$LOCALIDAD, EPV2024_rep$P203, prop.chisq = FALSE)
 tabla2 <- CrossTable(EPV2024_rep$ESTRATO, EPV2024_rep$P203, prop.chisq = FALSE)
 tabla3 <- CrossTable(EPV2024_rep$SEXO, EPV2024_rep$P203, prop.chisq = FALSE)
+tabla4 <- CrossTable(EPV2024_rep$SEXO, EPV2024_rep$PERCEPCION, prop.chisq = FALSE)
 
 # Mapa #
 bogota_localidades <- st_read("Localidades/Loca.shp")
@@ -65,7 +66,6 @@ ggplot(bogota_map) +
             size = 2, color = "white") +
   theme_minimal()
 
-library(dplyr)
 columnas_localidades <- c("P203241", "P203242", "P203243", "P203244", "P203245", "P203246", "P203247", "P203248", "P203249", "P2032410", "P2032411", "P2032412", "P2032413", "P2032414", "P2032415", "P2032416", "P2032417", "P2032418", "P2032419")
 
 porcentaje_localidades <- EPV2024 %>%
@@ -95,6 +95,8 @@ ggplot(bogota_map) +
 
 #### ECN ####
 
+# logit odrinal #
+
 ecn2024$P56_1 <- factor(ecn2024$P56_1, ordered = TRUE)
 ecn2024$P64 <- factor(ecn2024$P64, ordered = TRUE)
 ecn2024$F5 <- factor(ecn2024$F5, ordered = TRUE)
@@ -116,6 +118,10 @@ stargazer(logit_ordinal, type = "text",
 ecn2024_rep <- ecn2024 %>%
   uncount(weights = round(FEX))
 
-tabla4 <- CrossTable(ecn2024$F5, ecn2024$P58, prop.chisq = FALSE)
-tabla5 <- CrossTable(ecn2024$P62, ecn2024$P56_1, prop.chisq = FALSE)
-tabla6 <- CrossTable(ecn2024$P64, ecn2024$P56_1, prop.chisq = FALSE)
+# CrossTables #
+
+tabla5 <- CrossTable(ecn2024$F5, ecn2024$P58, prop.chisq = FALSE)
+tabla6 <- CrossTable(ecn2024$P62, ecn2024$P56_1, prop.chisq = FALSE)
+tabla7 <- CrossTable(ecn2024$P64, ecn2024$P56_1, prop.chisq = FALSE)
+tabla8 <- CrossTable(ecn2024$F5, ecn2024$PERCEPCION, prop.chisq = FALSE)
+tabla8 <- CrossTable(ecn2023$P1, ecn2023$PERCEPCION, prop.chisq = FALSE)
