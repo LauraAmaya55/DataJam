@@ -77,4 +77,3 @@ datasets <- list(EPV2024 = EPV2024, EPV2023 = EPV2023, EPV2022 = EPV2022, EPV202
 for (nombre in names(datasets)) {
   write.csv(datasets[[nombre]], file = paste0("C:/Users/Asus/Documents/2025/DataJam/", nombre, ".csv"), row.names = FALSE)
 }
-
