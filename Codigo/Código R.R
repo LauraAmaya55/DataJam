@@ -6,6 +6,8 @@ library(gmodels)
 library(tidyr)
 library(sf)     
 library(ggplot2)
+library(margins)
+library(effects)
 EPV2024 <- read_csv("EPV/EPV2024.csv")
 EPV2023 <- read_csv("EPV/EPV2023.csv")
 EPV2022 <- read_csv("EPV/EPV2022.csv")
@@ -27,7 +29,13 @@ stargazer(logit_EPV2024, logit_EPV2024_loc, type = "text",
           column.labels = c("en Bogotá", "en la localidad en la que vive"),
           dep.var.labels = c("Percepción de seguridad", "Percepción de seguridad"),
           covariate.labels = c("SEXO (MUJER=1)", "REDAD", "ESTRATO", "VÍCTIMA", "PRECENCIÓ", "PERCEPCIÓN NEGOCIO", "NEGOCIO"),
-          out = "logit_comparison.tex")
+          out = "logit_comparison.tex")}
+
+marginal_effects <- marginal_effects
+marginal_effects_loc <- marginal_effects_loc
+
+summary(marginal_effects)
+summary(marginal_effects_loc)
 
 # CrossTables #
 EPV2024_rep <- EPV2024 %>%
@@ -37,8 +45,9 @@ tabla1 <- CrossTable(EPV2024_rep$LOCALIDAD, EPV2024_rep$P203, prop.chisq = FALSE
 tabla2 <- CrossTable(EPV2024_rep$ESTRATO, EPV2024_rep$P203, prop.chisq = FALSE)
 tabla3 <- CrossTable(EPV2024_rep$SEXO, EPV2024_rep$P203, prop.chisq = FALSE)
 tabla4 <- CrossTable(EPV2024_rep$SEXO, EPV2024_rep$PERCEPCION, prop.chisq = FALSE)
+tabla5 <- CrossTable(EPV2024_rep$REDAD, EPV2024_rep$P203, prop.chisq = FALSE)
 
-# Mapa #
+ # Mapa #
 bogota_localidades <- st_read("Localidades/Loca.shp")
 bogota_localidades <- bogota_localidades[bogota_localidades$LocCodigo != 20, ]
 bogota_localidades$LocCodigo <- as.numeric(bogota_localidades$LocCodigo)
@@ -115,13 +124,15 @@ stargazer(logit_ordinal, type = "text",
           dep.var.labels = "Percepción de inseguridad",
           out = "ordinal_logit.tex")
 
+print(margins(logit_ordinal))
+
 ecn2024_rep <- ecn2024 %>%
   uncount(weights = round(FEX))
 
 # CrossTables #
 
-tabla5 <- CrossTable(ecn2024$F5, ecn2024$P58, prop.chisq = FALSE)
-tabla6 <- CrossTable(ecn2024$P62, ecn2024$P56_1, prop.chisq = FALSE)
-tabla7 <- CrossTable(ecn2024$P64, ecn2024$P56_1, prop.chisq = FALSE)
-tabla8 <- CrossTable(ecn2024$F5, ecn2024$PERCEPCION, prop.chisq = FALSE)
-tabla8 <- CrossTable(ecn2023$P1, ecn2023$PERCEPCION, prop.chisq = FALSE)
+tabla6 <- CrossTable(ecn2024$F5, ecn2024$P58, prop.chisq = FALSE)
+tabla7 <- CrossTable(ecn2024$P62, ecn2024$P56_1, prop.chisq = FALSE)
+tabla8 <- CrossTable(ecn2024$P64, ecn2024$P56_1, prop.chisq = FALSE)
+tabla9 <- CrossTable(ecn2024$F5, ecn2024$PERCEPCION, prop.chisq = FALSE)
+tabla10 <- CrossTable(ecn2023$P1, ecn2023$PERCEPCION, prop.chisq = FALSE)
