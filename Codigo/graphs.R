@@ -62,7 +62,8 @@ ggplot(datos_epv, aes(x = factor(Año), y = Conteo)) +
   geom_point(aes(y = Conteo), color = "darkblue", size = 3) +
   geom_line(aes(x = factor(Año), y = Conteo, group = 1), color = "darkblue", size = 1) +
   labs(title = "Percepción de inseguridad por año (EPV)", x = "Año", y = "Conteo ponderado") +
-  scale_y_continuous(labels = comma) +
+  scale_y_continuous(labels = scales::comma) +  
+  coord_cartesian(ylim = c(0.85, 1)) +  
   theme_minimal()
 
 # Gráfico para ECN
